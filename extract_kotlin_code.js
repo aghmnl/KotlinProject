@@ -1,8 +1,10 @@
 const fs = require("fs");
 const path = require("path");
+const prompt = require("prompt-sync")();
 
-// Define the main folder path
-const mainFolder = "/Users/agus/Documents/Entorno/FollowApps/Android/MyTasks/app/src/main";
+// Prompt the user to enter the main folder path
+let mainFolder = prompt("Please enter the main folder path ('/Users/username/folder'): ");
+mainFolder = mainFolder.replace(/'/g, "");
 
 // Function to read files recursively
 function readFilesRecursively(dir, fileList = []) {
