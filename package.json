@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@types/node": "^22.7.5"
+  },
+  "name": "kotlinproject",
+  "version": "1.0.0",
+  "main": "extract_kotlin_code.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "extract": "node extract_kotlin_code.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

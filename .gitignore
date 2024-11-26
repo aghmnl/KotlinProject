@@ -1,0 +1,4 @@
+/node_modules
+extracted_code.txt
+package-lock.json
+.DS_Store
