@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const prompt = require("prompt-sync")();
 
-// Prompt the user to enter the main folder path
+// Prompt the user to enter the main folder path and remove any single quotes
 let mainFolder = prompt("Please enter the main folder path ('/Users/username/folder'): ");
 mainFolder = mainFolder.replace(/'/g, "");
 
@@ -13,23 +13,22 @@ function readFilesRecursively(dir, fileList = []) {
     const filePath = path.join(dir, file);
     if (fs.statSync(filePath).isDirectory()) {
       readFilesRecursively(filePath, fileList);
-    } else if (filePath.endsWith(".kt")) {
+    } else if (filePath.endsWith(".xml")) {
       fileList.push(filePath);
     }
   });
   return fileList;
 }
 
-// Function to extract and clean code from a file
-function extractCode(filePath) {
+// Function to extract and clean XML content from a file
+function extractXMLContent(filePath) {
   const fileContent = fs.readFileSync(filePath, "utf8");
-  const lines = fileContent.split("\n");
-  const cleanedLines = lines.filter((line) => !line.trim().startsWith("package") && !line.trim().startsWith("import") && !line.trim().startsWith("//"));
-  // Join the cleaned lines back into a single string, remove extra spaces, and ensure each line ends with a newline character
-  const cleanedContent = cleanedLines
-    .join("\n")
-    .replace(/\s{2,}/g, " ")
-    .replace(/(.+)/g, "$1\n");
+  // Remove XML comments
+  let cleanedContent = fileContent.replace(/<!--[\s\S]*?-->/g, "");
+  // Remove lines starting with <? and ending with ?>
+  cleanedContent = cleanedContent.replace(/<\?[\s\S]*?\?>/g, "");
+  // Remove unnecessary spaces
+  cleanedContent = cleanedContent.replace(/\s{2,}/g, " ").replace(/>\s+</g, "><");
   return cleanedContent;
 }
 
@@ -57,31 +56,31 @@ function splitIntoGroups(content, maxGroupSize = 4000) {
 
 // Main function to process files and write to a single txt file
 function main() {
-  const kotlinFiles = readFilesRecursively(mainFolder);
-  let extractedCode = [];
+  const xmlFiles = readFilesRecursively(mainFolder);
+  let extractedContent = [];
 
-  kotlinFiles.forEach((filePath) => {
+  xmlFiles.forEach((filePath) => {
     const fileName = path.basename(filePath);
     let fileContent = `\nFile: ${fileName}\n`;
-    fileContent += extractCode(filePath);
+    fileContent += extractXMLContent(filePath);
     fileContent += "\n";
 
     if (fileContent.length > 4000) {
       const splitContent = splitIntoGroups([fileContent], 4000);
-      extractedCode = extractedCode.concat(splitContent);
+      extractedContent = extractedContent.concat(splitContent);
     } else {
-      extractedCode.push(fileContent);
+      extractedContent.push(fileContent);
     }
   });
 
-  const groups = splitIntoGroups(extractedCode, 4000);
+  const groups = splitIntoGroups(extractedContent, 4000);
   let finalContent = "";
   groups.forEach((group) => {
     finalContent += `${group}\n\n`;
   });
 
-  fs.writeFileSync("extracted_kt.txt", finalContent);
-  console.log("Code extraction complete. Check extracted_code.txt");
+  fs.writeFileSync("extracted_xml.txt", finalContent);
+  console.log("XML content extraction complete. Check extracted_xml_content.txt");
 }
 
 main();
