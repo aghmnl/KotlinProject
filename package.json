@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "kt": "node extract_kotlin_code.js",
-    "xml": "node extract_xml_code.js"
+    "xml": "node extract_xml_code.js",
+    "code": "node extract_kt_xml_code.js"
   },
   "keywords": [],
   "author": "",
