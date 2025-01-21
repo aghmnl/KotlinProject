@@ -18,6 +18,12 @@ npm run kt
 npm run xml
 ```
 
+#### For both kt and xml code
+
+```
+npm run code
+```
+
 ### Folder path
 
 When excecuted, it will request the main folder path. For example: `/Users/username/project/app/src/main` In Mac you can drag and drop the folder from the Finder into the Terminal to have the whole path written. Any `'` char will be removed from the path name. Remember that is requesting a folder path and not a file path.
